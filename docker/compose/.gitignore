@@ -1,0 +1,9 @@
+# Local environment
+.env
+
+# Docker overrides
+compose.override.yaml
+docker-compose.override.yml
+
+# Logs
+*.log
