@@ -1,0 +1,6 @@
+{
+  "files.autoSave": "afterDelay",
+  "workbench.iconTheme": "material-icon-theme",
+  "redhat.telemetry.enabled": false,
+  "cursor.composer.shouldChimeAfterChatFinishes": true
+}

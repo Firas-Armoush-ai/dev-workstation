@@ -1,0 +1,21 @@
+[user]
+    name = Your Name
+    email = your@email.com
+
+[init]
+    defaultBranch = main
+
+[pull]
+    rebase = false
+
+[core]
+    autocrlf = input
+
+[fetch]
+    prune = true
+
+[push]
+    autoSetupRemote = true
+
+[merge]
+    ff = false

@@ -1,0 +1,12 @@
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+*.tmp
+*.temp
+
+*.swp
+
+.vscode-test
+
+.cache

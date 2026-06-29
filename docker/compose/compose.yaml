@@ -3,6 +3,11 @@
 # https://github.com/Firas-Armoush-ai/dev-workstation
 # compose.yaml defines the infrastructure.
 #******************************************************
+
+# ******************************************************
+# PostgreSQL
+# ******************************************************
+# Primary relational database for FastAPI, Django, Laravel and AI applications.
 services:
   postgres:
     image: postgres:17
@@ -30,6 +35,14 @@ services:
       - dev-network
 
 # ******************************************************
+# Redis
+# ******************************************************
+# Cache, queues and AI session storage.
+# Redis is a fast, in-memory key-value store that is used as a cache, queue and AI session storage.
+# Redis is a great choice for caching frequently accessed data and for storing AI session data.
+# Redis is a great choice for queuing background tasks and for storing AI session data.
+# Redis is a great choice for storing AI session data.
+
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pgadmin
@@ -53,6 +66,11 @@ services:
       - dev-network
 
 #******************************************************
+# MySQL
+# ******************************************************
+# Compatibility testing for applications requiring MySQL.
+# MySQL is a relational database management system (RDBMS) that is used as a compatibility testing for applications requiring MySQL.
+# MySQL is a great choice for compatibility testing for applications requiring MySQL.
   redis:
     image: redis:8-alpine
     container_name: redis
@@ -79,6 +97,39 @@ services:
     networks:
       - dev-network
 
+  # ******************************************************
+  # MySQL
+  # Compatibility testing for applications requiring MySQL.
+  # ******************************************************
+
+  mysql:
+    image: mysql:8.4
+
+    container_name: mysql
+
+    restart: unless-stopped
+
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+    ports:
+      - "${MYSQL_PORT}:3306"
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+    networks:
+      - dev-network
 
 volumes:
   postgres-data:
@@ -87,6 +138,8 @@ volumes:
     name: pgadmin-data
   redis-data:
     name: redis-data
+  mysql-data:
+    name: mysql-data
 
 networks:
   dev-network:

@@ -1,102 +1,95 @@
 # Dev Workstation
 
-> A reproducible, Linux-first AI Engineering development platform built with Windows, WSL2, Docker, Conda, Python, Flutter, Android Studio, Cursor, and Visual Studio Code.
+> **A production-inspired AI development workstation that any AI engineer can clone and use in under 30 minutes.**
+
+This repository provides a reproducible, Linux-first development environment for AI engineering using Windows, WSL2, Docker, Conda, Python, Cursor, Visual Studio Code, PostgreSQL, Redis, and MySQL.
+
+The project focuses on reproducibility, automation, and professional engineering practices rather than installation notes.
 
 ---
 
-## Overview
+## Architecture
 
-**Dev Workstation** documents the design, implementation, and maintenance of a modern software engineering workstation optimized for Artificial Intelligence, Machine Learning, Backend Development, Flutter, and DevOps workflows.
-
-Rather than being a collection of installation notes, this repository serves as an engineering reference that captures architectural decisions, automation, configuration, and operational knowledge required to reproduce a professional development environment.
-
-The repository is maintained using Infrastructure as Code principles wherever practical. Configuration files, documentation, scripts, and development standards are version-controlled to ensure the workstation remains reproducible, maintainable, and portable.
-
----
-
-## Objectives
-
-This repository aims to:
-
-* Build a reproducible development workstation.
-* Document engineering decisions and their rationale.
-* Automate workstation provisioning where practical.
-* Standardize development tools and workflows.
-* Serve as a long-term engineering knowledge base.
-* Demonstrate professional engineering practices through documentation and automation.
+<p align="center">
+  <img src="assets/architecture.png"
+       alt="Development Workstation Architecture"
+       width="100%">
+</p>
 
 ---
 
-## Guiding Principles
+# Live Workstation
 
-The workstation is designed around several engineering principles.
+The following screenshot shows the workstation running locally on Windows with WSL2, Docker, PostgreSQL, Redis, MySQL, pgAdmin, and the development workspace.
 
-### Linux-first Development
-
-Python, Git, Docker, Jupyter, AI frameworks, and modern development tooling execute inside WSL2 to provide a Linux-native development environment while preserving the convenience of Windows desktop applications.
-
-### Reproducibility
-
-Every configuration should be reproducible from version-controlled files.
-
-### Automation
-
-Manual configuration is minimized. Installation and maintenance tasks should be automated whenever possible.
-
-### Documentation-first
-
-Every important decision is documented. Future maintainers—including the author—should understand not only *how* something was implemented but *why* it was chosen.
-
-### Security
-
-Secrets, credentials, certificates, and personal configuration are never committed to the repository.
+<p align="center">
+  <img src="assets/workstation.png"
+       alt="Dev Workstation Running Locally"
+       width="100%">
+</p>
 
 ---
 
-## Repository Structure
+
+# Features
+
+* Linux-first development using WSL2
+* Docker-based local infrastructure
+* PostgreSQL development database
+* Redis cache
+* MySQL development database
+* pgAdmin for database administration
+* Shared configuration and automation scripts
+* Production-inspired repository structure
+* Health verification (`make doctor`)
+* Infrastructure management (`make up`, `make down`, `make status`)
+* Automated database backups
+* Architecture Decision Records (ADRs)
+* Troubleshooting documentation
+
+---
+
+# Repository Structure
 
 ```text
-.github/        GitHub workflows and templates
-assets/         Images and diagrams
-bootstrap/      Workstation bootstrap scripts
-config/         Tool configuration files
-docker/         Container infrastructure
-docs/           Documentation
-examples/       Sample configurations
-scripts/        Automation scripts
-templates/      Reusable templates
+.
+├── assets/        Images and diagrams
+├── config/        Cursor, VS Code and Git configuration
+├── docker/        Docker Compose and container resources
+├── docs/          Architecture and documentation
+├── scripts/       Automation and maintenance scripts
+├── Makefile
+├── README.md
+└── VERSION
 ```
 
 ---
 
-## Technology Stack
+# Technology Stack
 
-### Operating System
+## Operating System
 
-* Windows 10/11
+* Windows 10 / 11
 * WSL2 (Ubuntu)
 
-### Development
+## Development
 
 * Cursor
 * Visual Studio Code
 * Git
 * GitHub
 
-### AI Engineering
+## AI Engineering
 
 * Python
 * Conda
-* JupyterLab
+* Jupyter
 * PyTorch
 * Transformers
 * MLflow
 * OpenAI SDK
-* LangChain
-* LangGraph
-* Azure Machine Learning SDK
 
-### Infrastructure
+## Infrastructure
 
 * Docker Desktop
 * Docker Compose
@@ -105,46 +98,114 @@ templates/      Reusable templates
 * MySQL
 * pgAdmin
 
-### Mobile Development
+## Mobile Development
 
 * Flutter
-* Dart
 * Android Studio
 
 ---
 
-## Documentation
+# Quick Start
 
-Detailed documentation is organized under the `docs/` directory.
+Clone the repository.
 
-| Section         | Description                          |
-| --------------- | ------------------------------------ |
-| Architecture    | High-level workstation design        |
-| Decisions       | Architecture Decision Records (ADRs) |
-| Installation    | Installation guides                  |
-| Troubleshooting | Common issues and resolutions        |
-| References      | External documentation and resources |
+```bash
+git clone git@github.com:Firas-Armoush-ai/dev-workstation.git
+
+cd dev-workstation
+```
+
+Copy the environment template.
+
+```bash
+cp docker/compose/.env.example docker/compose/.env
+```
+
+Start the workstation.
+
+```bash
+make up
+```
+
+Verify the environment.
+
+```bash
+make doctor
+```
+
+Display container status.
+
+```bash
+make status
+```
+
+The workstation is now ready for AI development.
 
 ---
 
-## Roadmap
+# Daily Commands
 
-* [x] Windows development environment
-* [x] WSL2 development platform
-* [x] Python AI environment
-* [x] Docker integration
-* [x] Cursor configuration
-* [x] Visual Studio Code configuration
-* [ ] PostgreSQL container stack
-* [ ] Redis container stack
-* [ ] MySQL container stack
-* [ ] Automated workstation bootstrap
-* [ ] Continuous validation scripts
+| Command        | Description                  |
+| -------------- | ---------------------------- |
+| `make up`      | Start all services           |
+| `make down`    | Stop all services            |
+| `make restart` | Restart containers           |
+| `make ps`      | Show Docker Compose services |
+| `make status`  | Show workstation status      |
+| `make doctor`  | Verify workstation health    |
+| `make backup`  | Backup PostgreSQL and MySQL  |
+| `make logs`    | View container logs          |
 
 ---
 
-## License
+# Documentation
 
-This project is released under the MIT License.
+| Document                   | Purpose                       |
+| -------------------------- | ----------------------------- |
+| `docs/architecture/`       | System architecture           |
+| `docs/decisions/`          | Architecture Decision Records |
+| `docs/troubleshooting/`    | Common issues and solutions   |
+| `docker/compose/README.md` | Docker operations             |
+
+---
+
+# Repository Principles
+
+* Linux-first development
+* Infrastructure as Code
+* One source of truth for configuration
+* Reproducible environments
+* Automation over manual configuration
+* Documentation alongside implementation
+
+---
+
+# Roadmap
+
+## Completed
+
+* Windows + WSL2 development
+* Docker integration
+* PostgreSQL stack
+* Redis stack
+* MySQL stack
+* pgAdmin
+* Backup automation
+* Health verification
+* Shared configuration
+* Makefile automation
+
+## Future
+
+* Bootstrap automation
+* GitHub Actions
+* Dev Containers
+* AI project templates
+
+---
+
+# License
+
+This project is licensed under the MIT License.
 
 See the `LICENSE` file for details.

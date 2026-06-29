@@ -2,130 +2,179 @@
 
 ## Overview
 
-This repository documents a production-inspired local development workstation for Artificial Intelligence, Machine Learning, Backend Development, Flutter, and Cloud Engineering.
+The **Dev Workstation** provides a production-inspired, Linux-first AI engineering environment built on Windows, WSL2, Docker, and Conda.
 
-The goal is to provide a reproducible, Linux-first development environment that mirrors modern engineering practices while remaining simple enough for daily development.
+The architecture is designed around four principles:
+
+* Reproducibility
+* Automation
+* Isolation
+* Simplicity
+
+All development is performed inside WSL2 while desktop applications continue to run on Windows.
+
+---
+
+## Architecture Diagram
+
+<p align="center">
+  <img src="../../assets/architecture.png"
+       alt="Development Workstation Architecture"
+       width="100%">
+</p>
 
 ---
 
 # High-Level Architecture
 
 ```text
-                     Windows 10/11
-                            │
-        ┌───────────────────┴───────────────────┐
-        │                                       │
- Android Studio                          Docker Desktop
-        │                                       │
- Flutter SDK                               WSL2 Ubuntu
-                                                │
-                                      Cursor / VS Code
-                                                │
-                                      Docker Compose Stack
-                                                │
-      ┌──────────────┬──────────────┬──────────────┬──────────────┐
-      │              │              │              │
- PostgreSQL      pgAdmin         Redis         MySQL
-      │
- Named Docker Volume
+                              Windows 11
+                                   │
+        ┌──────────────────────────┴──────────────────────────┐
+        │                                                     │
+        │                                             Docker Desktop
+        │                                                     │
+ Android Studio                                      WSL2 Ubuntu 24.04
+        │                                                     │
+ Flutter SDK                                   Cursor / VS Code
+                                                              │
+                                                     Conda + Python
+                                                              │
+                                                    Docker Compose
+                                                              │
+         ┌──────────────────────┬──────────────────┬──────────────────────┐
+         │                      │                  │                      │
+    PostgreSQL              Redis             MySQL                 pgAdmin
+         │                      │                  │
+         └────────────── Named Docker Volumes ──────────────┘
 ```
 
 ---
 
-# Design Principles
-
-The workstation follows these engineering principles:
-
-* Linux-first development
-* Infrastructure as Code
-* Docker-based services
-* Environment-based configuration
-* Health checks for infrastructure services
-* Persistent named volumes
-* Conventional Commits
-* Semantic Versioning
-* Architecture Decision Records (ADRs)
-* Verification before documentation
-
----
-
-# Technology Stack
-
-## Operating System
-
-* Windows 10/11
-* Windows Subsystem for Linux (WSL2)
-* Ubuntu 24.04 LTS
-
-## Development Tools
-
-* Cursor
-* Visual Studio Code
-* Git
-* Docker Desktop
-* Android Studio
-* Flutter SDK
-
-## Python
-
-* Miniconda
-* Isolated Conda environments
-* JupyterLab
-
-## Infrastructure
-
-Current
-
-* PostgreSQL 17
-* pgAdmin 4
-
-Planned
-
-* Redis
-* MySQL
-* MinIO
-* Qdrant
-* Ollama
-
----
-
-# Repository Structure
+# Repository Architecture
 
 ```text
 dev-workstation/
 │
+├── assets/
+├── config/
 ├── docker/
 ├── docs/
-├── config/
 ├── scripts/
-├── templates/
-├── bootstrap/
-└── .github/
+│
+├── Makefile
+├── README.md
+├── VERSION
+├── CHANGELOG.md
+└── LICENSE
 ```
 
 ---
 
-# Engineering Workflow
+# Configuration Strategy
 
-Every deliverable follows the same lifecycle:
+The workstation follows a **single source of truth** approach.
 
-1. Plan
-2. Design
-3. Implement
-4. Verify
-5. Document
-6. Commit
-7. Push
-8. Tag (when appropriate)
+| Component             | Configuration                 |
+| --------------------- | ----------------------------- |
+| Docker Compose        | `docker/compose/compose.yaml` |
+| Environment Variables | `docker/compose/.env`         |
+| Cursor                | `config/cursor/`              |
+| VS Code               | `config/vscode/`              |
+| Git                   | `config/git/`                 |
+
+No credentials, paths, or environment variables are duplicated across scripts.
 
 ---
 
-# Current Status
+# Automation Architecture
 
-| Deliverable                  | Status   |
-| ---------------------------- | -------- |
-| Repository Foundation        | Complete |
-| Linux-first Architecture     | Complete |
-| PostgreSQL Development Stack | Complete |
-| Redis Development Stack      | Planned  |
-| MySQL Development Stack      | Planned  |
+Automation is organized by responsibility.
+
+```text
+scripts/
+├── backup/
+│   ├── backup-all.sh
+│   ├── backup-postgres.sh
+│   ├── backup-mysql.sh
+│   ├── restore-postgres.sh
+│   └── restore-mysql.sh
+│
+├── lib/
+│   └── common.sh
+│
+├── linux/
+│   ├── doctor.sh
+│   └── status.sh
+│
+└── windows/
+```
+
+The `common.sh` library provides a shared configuration layer used by all Linux automation scripts.
+
+---
+
+# Infrastructure Services
+
+| Service    | Purpose                   |
+| ---------- | ------------------------- |
+| PostgreSQL | Relational database       |
+| Redis      | Cache and message broker  |
+| MySQL      | Relational database       |
+| pgAdmin    | PostgreSQL administration |
+
+Each service:
+
+* runs inside Docker
+* has health checks
+* uses persistent named volumes
+* is managed through Docker Compose
+
+---
+
+# Engineering Principles
+
+The workstation follows these principles:
+
+* Linux-first development
+* Infrastructure as Code
+* One source of truth
+* Automation over manual configuration
+* Reproducible environments
+* Health verification before development
+* Conventional Commits
+* Semantic Versioning
+* Architecture Decision Records (ADRs)
+
+---
+
+# Development Workflow
+
+Every infrastructure change follows the same lifecycle.
+
+1. Design
+2. Implement
+3. Verify
+4. Document
+5. Commit
+6. Push
+7. Release
+
+Verification is mandatory before documentation or release.
+
+---
+
+# Architecture Status
+
+| Component            | Status |
+| -------------------- | :----: |
+| Repository Structure |    ✅   |
+| Docker Compose       |    ✅   |
+| PostgreSQL           |    ✅   |
+| Redis                |    ✅   |
+| MySQL                |    ✅   |
+| pgAdmin              |    ✅   |
+| Backup Automation    |    ✅   |
+| Shared Configuration |    ✅   |
+| Health Verification  |    ✅   |
+| Documentation        |    ✅   |

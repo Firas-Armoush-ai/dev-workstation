@@ -94,13 +94,17 @@ build/
 local.properties
 
 # ----------------------------
-
 # Docker
-
 # ----------------------------
 
 docker/volumes/
-docker/backups/
+
+docker/backups/*
+!docker/backups/.gitkeep
+
+docker/backups/**/*.sql
+
+
 
 # ----------------------------
 
@@ -151,3 +155,5 @@ temp/
 # ----------------------------
 
 *.orig
+
+

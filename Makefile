@@ -1,59 +1,50 @@
 # ==========================================================
 # Dev Workstation
 # Production-inspired AI Development Environment
+# The Makefile should never contain business logic.
+# It only dispatches commands to the scripts/ directory.
 # ==========================================================
+
+# ==========================================================
+# Dev Workstation
+# ==========================================================
+
+SHELL := /usr/bin/env bash
 
 COMPOSE := docker compose -f docker/compose/compose.yaml
 
 .DEFAULT_GOAL := help
 
-.PHONY: \
-help \
-up \
-down \
-restart \
-ps \
-logs \
-config \
-pull \
-postgres \
-redis \
-mysql \
-backup \
-clean
-
-# ==========================================================
-# Help
-# ==========================================================
+.PHONY: help up down restart rebuild config logs ps pull \
+doctor status postgres mysql redis backup restore clean reset
 
 help:
 	@echo ""
-	@echo "=================================================="
-	@echo " Dev Workstation"
-	@echo "=================================================="
+	@echo "Dev Workstation"
 	@echo ""
 	@echo "Infrastructure"
-	@echo "  make up          Start all services"
-	@echo "  make down        Stop all services"
-	@echo "  make restart     Restart all services"
-	@echo "  make ps          List running containers"
-	@echo "  make logs        View all logs"
-	@echo "  make config      Validate compose configuration"
-	@echo "  make pull        Pull latest container images"
+	@echo "  make up"
+	@echo "  make down"
+	@echo "  make restart"
+	@echo "  make rebuild"
+	@echo "  make ps"
+	@echo "  make logs"
+	@echo "  make config"
+	@echo "  make pull"
 	@echo ""
 	@echo "Database"
-	@echo "  make postgres    PostgreSQL shell"
-	@echo "  make redis       Redis CLI"
-	@echo "  make mysql       MySQL shell (after MySQL is added)"
+	@echo "  make postgres"
+	@echo "  make mysql"
+	@echo "  make redis"
 	@echo ""
 	@echo "Maintenance"
-	@echo "  make backup      Backup databases (coming soon)"
-	@echo "  make clean       Remove containers and volumes"
+	@echo "  make doctor"
+	@echo "  make status"
+	@echo "  make backup"
+	@echo "  make restore"
+	@echo "  make clean"
+	@echo "  make reset"
 	@echo ""
-
-# ==========================================================
-# Docker Compose
-# ==========================================================
 
 up:
 	$(COMPOSE) up -d
@@ -62,42 +53,51 @@ down:
 	$(COMPOSE) down
 
 restart:
+	$(COMPOSE) restart
+
+rebuild:
 	$(COMPOSE) down
-	$(COMPOSE) up -d
-
-ps:
-	$(COMPOSE) ps
-
-logs:
-	$(COMPOSE) logs
+	$(COMPOSE) up -d --build
 
 config:
 	$(COMPOSE) config
 
+logs:
+	$(COMPOSE) logs -f
+
+ps:
+	$(COMPOSE) ps
+
 pull:
 	$(COMPOSE) pull
 
-# ==========================================================
-# Database Shells
-# ==========================================================
+doctor:
+	bash ./scripts/linux/doctor.sh
+
+status:
+	bash ./scripts/linux/status.sh
+
+backup:
+	bash ./scripts/backup/backup-all.sh
+
+restore:
+	@echo ""
+	@echo "bash scripts/backup/restore-postgres.sh <backup.sql>"
+	@echo "bash scripts/backup/restore-mysql.sh <backup.sql>"
+	@echo ""
 
 postgres:
 	docker exec -it postgres psql -U postgres -d appdb
 
+mysql:
+	docker exec -it mysql mysql -uroot -p
+
 redis:
 	docker exec -it redis redis-cli
 
-mysql:
-	docker exec -it mysql mysql -u root -p
-
-# ==========================================================
-# Maintenance
-# ==========================================================
-
-backup:
-	@echo ""
-	@echo "Backup scripts will be implemented in Deliverable 06."
-	@echo ""
-
 clean:
 	$(COMPOSE) down -v
+
+reset:
+	$(COMPOSE) down -v
+	docker system prune -f

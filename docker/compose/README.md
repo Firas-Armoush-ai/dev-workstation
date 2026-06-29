@@ -1,154 +1,175 @@
-# Docker Compose Development Stack
+# Docker Compose
 
-This directory contains the Docker Compose configuration for the local development environment.
+This directory contains the complete local infrastructure for the Dev Workstation.
 
-## Services
-
-| Service       | Port | Purpose                             |
-| ------------- | ---: | ----------------------------------- |
-| PostgreSQL 17 | 5432 | Primary relational database         |
-| pgAdmin 4     | 5050 | Web-based PostgreSQL administration |
-
-Additional services such as Redis and MySQL will be added in future milestones.
+The stack provides production-inspired services for AI engineering and software development.
 
 ---
 
-# Prerequisites
+# Services
 
-* Docker Desktop
-* WSL2
-* Docker Compose v2+
+| Service    | Port | Purpose                       |
+| ---------- | ---: | ----------------------------- |
+| PostgreSQL | 5432 | Primary relational database   |
+| pgAdmin    | 5050 | PostgreSQL administration     |
+| Redis      | 6379 | Cache and message broker      |
+| MySQL      | 3306 | Secondary relational database |
 
 ---
 
-# Start the stack
+# Configuration
+
+Environment variables are defined in:
+
+```text
+docker/compose/.env
+```
+
+A template is provided:
+
+```text
+docker/compose/.env.example
+```
+
+---
+
+# Start
 
 ```bash
-docker compose up -d
+make up
 ```
 
 ---
 
-# Stop the stack
+# Stop
 
 ```bash
-docker compose down
+make down
 ```
 
 ---
 
-# Restart the stack
+# Verify
 
 ```bash
-docker compose down
-docker compose up -d
+make doctor
 ```
 
 ---
 
-# View running containers
+# Status
 
 ```bash
-docker ps
+make status
 ```
 
 ---
 
-# Validate the Compose configuration
+# View Logs
 
 ```bash
-docker compose config
+make logs
 ```
 
 ---
 
-# View logs
-
-All services
+# Backup
 
 ```bash
-docker compose logs
+make backup
 ```
 
-Specific service
+---
+
+# Restore
+
+PostgreSQL
 
 ```bash
-docker compose logs postgres
+bash scripts/backup/restore-postgres.sh backup.sql
 ```
+
+MySQL
 
 ```bash
-docker compose logs pgadmin
+bash scripts/backup/restore-mysql.sh backup.sql
 ```
 
 ---
 
-# PostgreSQL
+# Services
 
-Default connection
+## PostgreSQL
 
-| Setting  | Value     |
-| -------- | --------- |
-| Host     | localhost |
-| Port     | 5432      |
-| Database | appdb     |
-| Username | postgres  |
-
----
-
-# pgAdmin
-
-URL
+Image
 
 ```
-http://127.0.0.1:5050/browser/
+postgres:17
 ```
 
-Default credentials are defined in the local `.env` file.
-
----
-
-# Environment Variables
-
-Configuration values are stored in:
+Persistent volume
 
 ```
-.env
-```
-
-The repository contains:
-
-```
-.env.example
-```
-
-Copy it before first use.
-
-```bash
-cp .env.example .env
+postgres-data
 ```
 
 ---
 
-# Data Persistence
+## Redis
 
-Docker named volumes are used to persist data.
+Image
 
-Current volumes
+```
+redis:8-alpine
+```
 
-* postgres-data
-* pgadmin-data
+Persistent volume
 
-Removing containers does **not** remove the database.
+```
+redis-data
+```
+
+Append Only File (AOF) persistence is enabled.
 
 ---
 
-# Project Structure
+## MySQL
+
+Image
 
 ```
-docker/
-└── compose/
-    ├── compose.yaml
-    ├── .env.example
-    ├── .gitignore
-    └── README.md
+mysql:8.4
 ```
+
+Persistent volume
+
+```
+mysql-data
+```
+
+---
+
+## pgAdmin
+
+Image
+
+```
+dpage/pgadmin4
+```
+
+Persistent volume
+
+```
+pgadmin-data
+```
+
+---
+
+# Design Principles
+
+* Docker Compose as the single orchestration tool.
+* Environment variables stored in one place.
+* Persistent named volumes.
+* Health checks for all databases.
+* Infrastructure managed through the Makefile.
+* No secrets committed to Git.
